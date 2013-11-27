@@ -18,7 +18,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="o.fcour.se.osrss.Feed"
-            android:label="@string/app_name" >
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/FeedTitle" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

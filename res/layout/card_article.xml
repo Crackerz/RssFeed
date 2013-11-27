@@ -6,6 +6,7 @@
 
     <ImageView
         android:id="@+id/articleImage"
+        android:contentDescription="@string/article_img"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
@@ -24,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="title" />
+            android:text="@string/article_title" />
         
         <TextView 
             android:id="@+id/articleDate"
@@ -32,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="No Date Available" />
+            android:text="@string/article_date" />
 
     </LinearLayout>
 
@@ -56,7 +57,7 @@
             android:layout_marginLeft="8dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:text="No Description Available" />
+            android:text="@string/article_content" />
     </LinearLayout>
 
 </LinearLayout>

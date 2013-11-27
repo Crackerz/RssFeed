@@ -7,9 +7,5 @@
     <style name="AppTheme" parent="AppBaseTheme">
         
     </style>
-    
-    <style name="article_title_read" parent="CardTitle">
-        
-    </style>
 
 </resources>

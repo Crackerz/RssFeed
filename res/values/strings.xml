@@ -2,7 +2,12 @@
 <resources>
 
     <string name="app_name">OsRss</string>
+    <string name="FeedTitle">Feed</string>
+    <string name="article_title">No Title Found</string>
+    <string name="article_date">No Date Found</string>
+    <string name="article_content">No Content Found</string>
+    <string name="article_img">Article Image</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    
 
 </resources>

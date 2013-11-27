@@ -37,6 +37,7 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 			urls = new ArrayList<URL>(2);
 			try {
 				urls.add(new URL("http://dailyegyptian.com/feed/"));
+				urls.add(new URL("http://lifehacker.com/rss"));
 			} catch (MalformedURLException e) {
 				//Since urls are hardcoded, this shouldn't be reached
 			}

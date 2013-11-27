@@ -3,6 +3,7 @@
 
     <string name="app_name">OsRss</string>
     <string name="FeedTitle">Feed</string>
+    <string name="feed_refresh">Refresh</string>
     <string name="article_title">No Title Found</string>
     <string name="article_date">No Date Found</string>
     <string name="article_content">No Content Found</string>

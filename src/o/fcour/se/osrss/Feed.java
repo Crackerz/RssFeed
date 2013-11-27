@@ -12,13 +12,16 @@ import de.nava.informa.core.ChannelIF;
 import de.nava.informa.core.ItemIF;
 import de.nava.informa.impl.basic.ChannelBuilder;
 import de.nava.informa.utils.ChannelRegistry;
+import de.nava.informa.utils.UpdateChannelInfo;
+import de.nava.informa.utils.UpdateChannelTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-public class Feed extends Activity implements FeedGenerator.Callback {
+public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdater.Callback {
 
 	ChannelRegistry rssFeeds;
 	ArrayList<URL> urls;
@@ -27,6 +30,7 @@ public class Feed extends Activity implements FeedGenerator.Callback {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feed);
+		
 		ProgressBar loading = (ProgressBar) findViewById(R.id.loadingFeed);
 		loading.setVisibility(View.VISIBLE);
 		if(urls==null) { //If no URLS, populate defaults
@@ -51,6 +55,15 @@ public class Feed extends Activity implements FeedGenerator.Callback {
 	protected void onResume() {
 		super.onResume();
 		refresh();
+	}
+	
+	@SuppressWarnings({ "static-access", "unchecked" })
+	public void update() {
+		Iterator<ChannelIF> feeds = rssFeeds.getChannels().iterator();
+		while(feeds.hasNext()) {
+			FeedUpdater updater = new FeedUpdater(this);
+			updater.execute(new UpdateChannelTask(rssFeeds,new ChannelBuilder(),feeds.next(),new UpdateChannelInfo(5)));
+		}
 	}
 	
 	public void refresh() {
@@ -83,12 +96,27 @@ public class Feed extends Activity implements FeedGenerator.Callback {
 		getMenuInflater().inflate(R.menu.feed, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case R.id.feedRefresh:
+			update();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 	@Override
 	public void complete(ChannelIF feed) {
 		ProgressBar loading = (ProgressBar) findViewById(R.id.loadingFeed);
 		loading.setVisibility(View.GONE);
 		rssFeeds.addChannel(feed,false,Integer.MAX_VALUE);
+		refresh();
+	}
+
+	@Override
+	public void complete() {
 		refresh();
 	}
 

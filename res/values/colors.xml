@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <color name="card_text_read">#ffCCCCCC</color>
+    <color name="card_title_text_read">#ffBDBDBD</color>
+    <color name="card_light_text_read">#ffb5b5b5</color>
+    <color name="card_grid_text_read">#ff707070</color>
+</resources>

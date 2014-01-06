@@ -9,11 +9,12 @@ import android.util.Log;
 
 public class SyncImage extends AsyncTask<String,Void,Bitmap>{
 
-	Callback callback;
-	
+	private Callback callback;
+
 	public SyncImage(Callback callback) {
 		this.callback = callback;
 	}
+
 	@Override
 	protected Bitmap doInBackground(String... url) {
 		try {
@@ -24,16 +25,16 @@ public class SyncImage extends AsyncTask<String,Void,Bitmap>{
 		} catch (Exception e) {
 			//Silently Fail
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	protected void onPostExecute(Bitmap image) {
 		if(callback!=null)
 			callback.complete(image);
 	}
-	
+
 	public interface Callback {
 		public void complete(Bitmap image);
 	}

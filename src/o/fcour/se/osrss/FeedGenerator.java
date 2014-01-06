@@ -12,8 +12,8 @@ import android.os.AsyncTask;
 
 public class FeedGenerator extends AsyncTask<URL,Void,ChannelIF> {
 
-	Callback callback;
-	
+	private Callback callback;
+
 	public FeedGenerator(Callback callback) {
 		this.callback = callback;
 	}
@@ -38,7 +38,7 @@ public class FeedGenerator extends AsyncTask<URL,Void,ChannelIF> {
 		if(callback!=null)
 			callback.complete(feed);
 	}
-	
+
 	public interface Callback {
 		public void complete(ChannelIF feed);
 	}

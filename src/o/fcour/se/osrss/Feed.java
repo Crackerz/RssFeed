@@ -24,10 +24,9 @@ import android.widget.ProgressBar;
 
 public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdater.Callback {
 
-	ChannelRegistry rssFeeds;
-	ArrayList<URL> urls;
-	SlidingMenu sideMenu;
-	
+	private ChannelRegistry rssFeeds;
+	private ArrayList<URL> urls;
+	private SlidingMenu sideMenu;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,8 +36,16 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 		ProgressBar loading = (ProgressBar) findViewById(R.id.loadingFeed);
 		loading.setVisibility(View.VISIBLE);
 		
-		
-		
+		if(urls==null) { //If no URLS, populate defaults
+			urls = new ArrayList<URL>(2);
+			try {
+				urls.add(new URL("http://dailyegyptian.com/feed/"));
+				urls.add(new URL("http://lifehacker.com/rss"));
+			} catch (MalformedURLException e) {
+				//Since urls are hardcoded, this shouldn't be reached
+			}
+		}
+
 		if(rssFeeds==null) { //If no feeds, populate them with our URLS
 			
 			/** This is where we populate the URLS.. Replace later **/
@@ -63,29 +70,29 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 		sideMenu.setMode(SlidingMenu.LEFT);
 		sideMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		refresh();
 	}
-	
-	@SuppressWarnings({ "static-access", "unchecked" })
+
 	public void update() {
-		Iterator<ChannelIF> feeds = rssFeeds.getChannels().iterator();
+		Iterator<?> feeds = rssFeeds.getChannels().iterator();
 		while(feeds.hasNext()) {
-			FeedUpdater updater = new FeedUpdater(this);
-			updater.execute(new UpdateChannelTask(rssFeeds,new ChannelBuilder(),feeds.next(),new UpdateChannelInfo(5)));
+			ChannelIF next = (ChannelIF)feeds.next();
+			FeedUpdater.execute(new UpdateChannelTask(rssFeeds,new ChannelBuilder(), next, new UpdateChannelInfo(5)));
 		}
 	}
-	
+
 	public void refresh() {
 
 		ArrayList<ArticleCard> cards = new ArrayList<ArticleCard>();
-		@SuppressWarnings("unchecked")
-		Iterator<ChannelIF> feeds = rssFeeds.getChannels().iterator();
+
+		Iterator<?> feeds = rssFeeds.getChannels().iterator();
 		while(feeds.hasNext()) {
-			Iterator<ItemIF> articles = feeds.next().getItems().iterator();
+			ChannelIF next = (ChannelIF)feeds.next();
+			Iterator<ItemIF> articles = next.getItems().iterator();
 			while(articles.hasNext()) {
 				ArticleCard card = new ArticleCard(articles.next(),this);
 				card.setOnClickListener(card);
@@ -93,14 +100,14 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 			}
 		}
 		Collections.sort(cards);
-		
+
 		CardUI feedView = (CardUI) findViewById(R.id.feedVIew);
 		feedView.clearCards();
 		Iterator<ArticleCard> it = cards.iterator();
 		while(it.hasNext()) {
 			feedView.addCard(it.next());
 		}
-		
+
 	}
 
 	@Override
@@ -109,7 +116,7 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 		getMenuInflater().inflate(R.menu.feed, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.fima.cardsui.views.CardUI;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import de.nava.informa.core.ChannelIF;
 import de.nava.informa.core.ItemIF;
@@ -25,31 +26,42 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 
 	ChannelRegistry rssFeeds;
 	ArrayList<URL> urls;
+	SlidingMenu sideMenu;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feed);
 		
+		/** We need a progress bar to show we are refreshing **/
 		ProgressBar loading = (ProgressBar) findViewById(R.id.loadingFeed);
 		loading.setVisibility(View.VISIBLE);
-		if(urls==null) { //If no URLS, populate defaults
-			urls = new ArrayList<URL>(2);
-			try {
-				urls.add(new URL("http://dailyegyptian.com/feed/"));
-				urls.add(new URL("http://lifehacker.com/rss"));
-			} catch (MalformedURLException e) {
-				//Since urls are hardcoded, this shouldn't be reached
-			}
-		}
+		
+		
 		
 		if(rssFeeds==null) { //If no feeds, populate them with our URLS
+			
+			/** This is where we populate the URLS.. Replace later **/
+			if(urls==null) { //If no URLS, populate defaults
+				urls = new ArrayList<URL>(2);
+				try {
+					urls.add(new URL("http://dailyegyptian.com/feed/"));
+					urls.add(new URL("http://lifehacker.com/rss"));
+				} catch (MalformedURLException e) {
+					//Since urls are hardcoded, this shouldn't be reached
+				}
+			}
+
 			rssFeeds = new ChannelRegistry(new ChannelBuilder());
 			Iterator<URL> it = urls.iterator();
 			while(it.hasNext()) {
 				(new FeedGenerator(this)).execute(it.next());
 			}
 		}
+		
+		sideMenu = new SlidingMenu(this);
+		sideMenu.setMode(SlidingMenu.LEFT);
+		sideMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 	}
 	
 	@Override
@@ -102,10 +114,14 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.feedRefresh:
-			update();
+			toggleMenu();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void toggleMenu() {
+		sideMenu.toggle();
 	}
 
 	@Override

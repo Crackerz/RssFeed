@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.fima.cardsui.views.CardUI;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
 import de.nava.informa.core.ChannelIF;
 import de.nava.informa.core.ItemIF;
@@ -16,21 +18,19 @@ import de.nava.informa.utils.ChannelRegistry;
 import de.nava.informa.utils.UpdateChannelInfo;
 import de.nava.informa.utils.UpdateChannelTask;
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdater.Callback {
+public class Feed extends SlidingActivity implements FeedGenerator.Callback, FeedUpdater.Callback {
 
 	private ChannelRegistry rssFeeds;
 	private ArrayList<URL> urls;
-	private SlidingMenu sideMenu;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feed);
+		setBehindContentView(R.layout.activity_feed);
 		
 		/** We need a progress bar to show we are refreshing **/
 		ProgressBar loading = (ProgressBar) findViewById(R.id.loadingFeed);
@@ -65,10 +65,8 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 				(new FeedGenerator(this)).execute(it.next());
 			}
 		}
-		
-		sideMenu = new SlidingMenu(this);
-		sideMenu.setMode(SlidingMenu.LEFT);
-		sideMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSlidingMenu().setBehindWidthRes(R.dimen.SlidingMenuWidth);
 	}
 
 	@Override
@@ -107,28 +105,25 @@ public class Feed extends Activity implements FeedGenerator.Callback, FeedUpdate
 		while(it.hasNext()) {
 			feedView.addCard(it.next());
 		}
-
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.feed, menu);
+		this.getSupportMenuInflater().inflate(R.menu.feed, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
+		case android.R.id.home:
+			toggle();
 		case R.id.feedRefresh:
-			toggleMenu();
+			refresh();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	public void toggleMenu() {
-		sideMenu.toggle();
 	}
 
 	@Override

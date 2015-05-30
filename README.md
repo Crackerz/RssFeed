@@ -1,3 +1,5 @@
+# Project no longer supported, has known bugs
+
 RssFeed
 =======
 
